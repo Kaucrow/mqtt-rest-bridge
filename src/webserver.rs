@@ -24,6 +24,8 @@ impl WebServer {
                 .service(trigger_esp32)
                 .service(stop_raspberry)
                 .service(stop_esp32)
+                .service(resume_raspberry)
+                .service(resume_esp32)
         })
         .bind(("0.0.0.0", 3000))?
         .run();
@@ -70,7 +72,7 @@ async fn stop_raspberry(state: web::Data<AppState>) -> impl Responder {
         .await;
 
     match result {
-        Ok(_) => HttpResponse::Ok().body("Sent play command to Raspberry Pi"),
+        Ok(_) => HttpResponse::Ok().body("Sent stop command to Raspberry Pi"),
         Err(_) => HttpResponse::InternalServerError().body("Failed to send command to Raspberry Pi"),
     }
 }
@@ -83,7 +85,33 @@ async fn stop_esp32(state: web::Data<AppState>) -> impl Responder {
         .await;
 
     match result {
-        Ok(_) => HttpResponse::Ok().body("Sent play command to ESP32"),
+        Ok(_) => HttpResponse::Ok().body("Sent stop command to ESP32"),
+        Err(_) => HttpResponse::InternalServerError().body("Failed to send command to ESP32"),
+    }
+}
+
+#[post("/resume/raspberry")]
+async fn resume_raspberry(state: web::Data<AppState>) -> impl Responder {
+    // Publish the command to the broker
+    let result = state.mqtt_client
+        .publish("commands/raspberry/play", QoS::AtLeastOnce, false, "")
+        .await;
+
+    match result {
+        Ok(_) => HttpResponse::Ok().body("Sent resume command to Raspberry Pi"),
+        Err(_) => HttpResponse::InternalServerError().body("Failed to send command to Raspberry Pi"),
+    }
+}
+
+#[post("/resume/esp32")]
+async fn resume_esp32(state: web::Data<AppState>) -> impl Responder {
+    // Publish the command to the broker
+    let result = state.mqtt_client
+        .publish("commands/esp32/play", QoS::AtLeastOnce, false, "")
+        .await;
+
+    match result {
+        Ok(_) => HttpResponse::Ok().body("Sent resume command to ESP32"),
         Err(_) => HttpResponse::InternalServerError().body("Failed to send command to ESP32"),
     }
 }
