@@ -17,3 +17,5 @@ tokio = { version = "1.50.0", features = ["full"] }
 tracing = "0.1.44"
 tracing-appender = "0.2.4"
 tracing-subscriber = { version = "0.3.23", features = ["time", "env-filter", "fmt", "std", "tracing-log", "chrono"] }
+utoipa = "5.4.0"
+utoipa-scalar = { version = "0.3.0", features = ["actix-web"] }
