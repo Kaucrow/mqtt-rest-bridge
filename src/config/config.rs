@@ -6,6 +6,8 @@ use strum::Display;
 pub struct Config {
     pub debug: bool,
     pub server: ServerConfig,
+    #[serde(rename = "database")]
+    pub db: DbConfig,
 }
 
 #[derive(Deserialize)]
@@ -29,6 +31,12 @@ impl ServerConfig {
 pub enum ServerProtocol {
     Http,
     Https,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub struct DbConfig {
+    pub name: String,
 }
 
 pub fn get_config() -> Result<Config, config::ConfigError> {

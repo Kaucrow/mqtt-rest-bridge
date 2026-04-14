@@ -3,8 +3,8 @@ use rumqttc::{AsyncClient, Event, Incoming, MqttOptions, QoS};
 use std::time::Duration;
 use tracing::{debug, error};
 
-pub async fn start_mqtt_client(db_path: String) -> anyhow::Result<AsyncClient> {
-    let mut mqttoptions = MqttOptions::new("server-db-worker", "127.0.0.1", 1883);
+pub async fn start_mqtt_client(host: &str, port: u16, db_path: String) -> anyhow::Result<AsyncClient> {
+    let mut mqttoptions = MqttOptions::new("server-db-worker", host, port);
     mqttoptions.set_keep_alive(Duration::from_secs(5));
 
     let (client, mut eventloop) = AsyncClient::new(mqttoptions, 10);
