@@ -4,7 +4,7 @@ use rumqttd::Config as RumqttdConfig;
 pub fn get_broker_config() -> Result<RumqttdConfig, config::ConfigError> {
     let base_path = get_base_path();
 
-    let environment: String = std::env::var("APP_ENVIRONMENT")
+    let environment: String = std::env::var("RAILWAY_ENVIRONMENT_NAME")
         .unwrap_or_else(|_| "development".into());
 
     let config_directory = base_path.join(format!("config/{}", environment));
