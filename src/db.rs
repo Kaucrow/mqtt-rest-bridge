@@ -31,7 +31,7 @@ impl Db {
         let queries = QUERIES.get().expect("Queries not initialized.");
 
         conn.execute(
-            &queries.sensor_readings.insert,
+            &queries.presence.insert,
             params![device, payload]
         )?;
 
