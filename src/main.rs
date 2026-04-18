@@ -9,7 +9,6 @@ use mqtt_rest_bridge::{
     client,
 };
 use std::time::Duration;
-use local_ip_address::local_ip;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -31,10 +30,9 @@ async fn main() -> anyhow::Result<()> {
 
     // Give the broker half a second to bind to the port
     tokio::time::sleep(Duration::from_millis(500)).await;
-    let local_ip = local_ip().unwrap_or("127.0.0.1".parse().unwrap()).to_string();
     info!(
         "MQTT Broker listening on {}. Available topics: {}.",
-        format!("{}:{}", local_ip, broker_port).yellow(),
+        config.broker.addr().yellow(),
         "'sensors/esp32', 'sensors/raspberry', 'commands/esp32/play', 'commands/raspberry/play'".magenta()
     );
 
