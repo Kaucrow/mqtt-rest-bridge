@@ -76,9 +76,9 @@ impl MqttClient {
     fn init_router() -> anyhow::Result<Router<MqttHandlerFn>> {
         let mut router = Router::new();
 
-        router.insert("presence/:device/status", Self::presence_handler as MqttHandlerFn)?;
-        router.insert("sensors/:device", Self::sensors_handler as MqttHandlerFn)?;
-        router.insert("commands/:device/play", Self::play_handler as MqttHandlerFn)?;
+        router.insert("presence/{device}/status", Self::presence_handler as MqttHandlerFn)?;
+        router.insert("sensors/{device}", Self::sensors_handler as MqttHandlerFn)?;
+        router.insert("commands/{device}/play", Self::play_handler as MqttHandlerFn)?;
 
         Ok(router)
     }
