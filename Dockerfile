@@ -11,7 +11,7 @@ COPY . .
 RUN npm i -g @asyncapi/cli@latest
 RUN asyncapi --version
 RUN asyncapi config versions
-RUN asyncapi generate fromTemplate asyncapi.yaml @asyncapi/html-template@latest -o mqtt-docs --force-write
+RUN asyncapi generate fromTemplate asyncapi.yaml @asyncapi/html-template@latest -o mqtt-docs --force-write --use-new-generator
 
 RUN cargo build --release
 
