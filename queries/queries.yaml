@@ -1,11 +1,42 @@
+presence:
+  create: |
+    CREATE TABLE IF NOT EXISTS device_presence (
+      dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      device VARCHAR(20) PRIMARY KEY,
+      status VARCHAR(20) NOT NULL
+    )
+  insert: |
+    INSERT INTO device_presence (device, status)
+    VALUES (?1, ?2)
 sensor_readings:
   create: |
     CREATE TABLE IF NOT EXISTS sensor_readings (
-      id INTEGER PRIMARY KEY,
-      topic TEXT NOT NULL,
-      payload TEXT NOT NULL,
-      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+      id SERIAL PRIMARY KEY,
+      dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      device VARCHAR(20) NOT NULL,
+      humidity NUMERIC NOT NULL,
+      temperature NUMERIC NOT NULL,
+      threshold NUMERIC NOT NULL,
+
+      -- ESP32 specific field
+      over_threshold BOOLEAN,
+
+      -- Raspberry specific field
+      unit VARCHAR(10)
     )
   insert: |
-    INSERT INTO sensor_readings (topic, payload)
+    INSERT INTO sensor_readings (
+      device, humidity, temperature, threshold, over_threshold, unit
+    )
+    VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+play_cmd_log:
+  create: |
+    CREATE TABLE IF NOT EXISTS play_command_log (
+      id SERIAL PRIMARY KEY,
+      dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      device VARCHAR(20) NOT NULL,
+      payload VARCHAR(20)
+    )
+  insert: |
+    INSERT INTO play_command_log (device, payload)
     VALUES (?1, ?2)

@@ -1,15 +1,18 @@
 use crate::prelude::*;
-use crate::config::Config;
+use crate::{
+    MqttClient,
+    config::Config
+};
 use actix_web::{
     web, post, Responder, App, HttpServer, HttpResponse,
     dev::Server,
 };
-use rumqttc::{AsyncClient, QoS};
+use rumqttc::QoS;
 use utoipa::OpenApi;
 use utoipa_scalar::{Scalar, Servable};
 
 struct AppState {
-    mqtt_client: AsyncClient,
+    mqtt_client: MqttClient,
 }
 
 #[derive(OpenApi)]
@@ -24,7 +27,7 @@ pub struct WebServer {
 }
 
 impl WebServer {
-    pub fn new(config: &Config, mqtt_client: AsyncClient) -> anyhow::Result<Self> {
+    pub fn new(config: &Config, mqtt_client: MqttClient) -> anyhow::Result<Self> {
         let data = web::Data::new(AppState { mqtt_client });
         let openapi = ApiDoc::openapi();
 

@@ -3,11 +3,25 @@ use crate::QUERIES;
 
 #[derive(Deserialize, Debug)]
 pub struct Queries {
+    pub presence: Presence,
     pub sensor_readings: SensorReadings,
+    pub play_cmd_log: PlayCmdLog,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct Presence {
+    pub create: String,
+    pub insert: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct SensorReadings {
+    pub create: String,
+    pub insert: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct PlayCmdLog {
     pub create: String,
     pub insert: String,
 }

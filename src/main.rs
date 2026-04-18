@@ -1,53 +1,46 @@
 use mqtt_rest_bridge::{
-    WebServer,
+    Db, WebServer, MqttBroker, MqttClient,
     prelude::*,
     config::get_config,
     telemetry,
-    queries,
-    db,
-    broker,
-    client,
 };
 use std::time::Duration;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     // Start MQTT broker in a background thread
-    let (_, broker_port) = broker::spawn_background_thread()?;
+    let mqtt_broker = MqttBroker::init()?;
 
-    let config = get_config(broker_port)?;
+    let config = get_config(mqtt_broker.port)?;
 
     // Init the tracing subscriber
     let (subscriber, _guard) = telemetry::get_subscriber(&config).await?;
     telemetry::init(subscriber);
 
-    // Read DB queries and set global state
-    queries::init()?;
-
     // Initialize database
     let db_path = &config.db.name;
-    db::init(db_path)?;
+    let db = Db::init(db_path)?;
 
     // Give the broker half a second to bind to the port
     tokio::time::sleep(Duration::from_millis(500)).await;
     info!(
         "MQTT Broker listening on {}. Available topics: {}.",
         config.broker.addr().yellow(),
-        "'sensors/esp32', 'sensors/raspberry', 'commands/esp32/play', 'commands/raspberry/play'".magenta()
+        "'presence/esp32/status', 'presence/raspberry/status', 'sensors/esp32', 'sensors/raspberry', 'commands/esp32/play', 'commands/raspberry/play'".magenta()
     );
 
     // Start MQTT client
     let mqtt_client_ip = "127.0.0.1";
-    let mqtt_client = client::start_mqtt_client(
+    let mqtt_client = MqttClient::init(
+        db,
         mqtt_client_ip,
-        broker_port,
-        config.db.name.clone()
+        mqtt_broker.port,
     )
     .await
     .expect("MQTT Client failed to start.");
     info!(
         "MQTT Client fetching sensor data from {}...",
-        format!("{}:{}", mqtt_client_ip, broker_port).yellow()
+        format!("{}:{}", mqtt_client_ip, mqtt_broker.port).yellow()
     );
 
     // Start MQTT controller API

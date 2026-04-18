@@ -8,6 +8,9 @@ pub mod client;
 mod webserver;
 
 pub use webserver::WebServer;
+pub use db::Db;
+pub use broker::MqttBroker;
+pub use client::MqttClient;
 
 use std::sync::OnceLock;
 use queries::Queries;
