@@ -2,7 +2,7 @@ presence:
   create: |
     CREATE TABLE IF NOT EXISTS device_presence (
       dt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      device VARCHAR(20) PRIMARY KEY,
+      device VARCHAR(20) NOT NULL,
       status VARCHAR(20) NOT NULL
     )
   insert: |
