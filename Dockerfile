@@ -8,10 +8,8 @@ RUN apk add --no-cache musl-dev build-base nodejs npm
 
 COPY . .
 
-RUN npm i -g @asyncapi/cli@latest
-RUN asyncapi --version
-RUN asyncapi config versions
-RUN asyncapi generate fromTemplate asyncapi.yaml @asyncapi/html-template@latest -o mqtt-docs --force-write
+RUN npm i -g @asyncapi/cli@latest && \
+    asyncapi generate fromTemplate asyncapi.yaml @asyncapi/html-template@latest -o mqtt-docs --force-write
 
 RUN cargo build --release
 
